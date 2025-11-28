@@ -44,9 +44,7 @@ const App: React.FC = () => {
         <Route
           path="/"
           element={
-            <DashboardLayout>
-              <Dashboard />
-            </DashboardLayout>
+            <LoginPage />
           }
         />
 
