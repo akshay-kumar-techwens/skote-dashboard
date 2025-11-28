@@ -35,7 +35,7 @@ const ArchiveIcon: React.FC<{ className?: string }> = ({ className = "w-6 h-6" }
 const TagIcon: React.FC<{ className?: string }> = ({ className = "w-6 h-6" }) => (
   <svg 
     viewBox="0 0 24 24" 
-    fill="none" 
+    fill="none"  
     stroke="currentColor" 
     strokeWidth="1.5"
     strokeLinecap="round" 

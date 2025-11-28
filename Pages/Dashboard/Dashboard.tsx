@@ -7,71 +7,141 @@ import SocialSourceCard from './SocialSourceCard';
 import ActivityFeed from './ActivityFeed';
 import TopCitiesCard from './TopCitiesCard';
 import TransactionTable from './TransactionTable';
+import { UserRole } from '../Auth/Login/types';
+
+// Safe function to get user
+const getCurrentUser = () => {
+  try {
+    const raw = localStorage.getItem("user");
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw);
+
+    // user.role must exist
+    if (!parsed.role) return null;
+
+    return parsed;
+  } catch {
+    console.error("Invalid JSON in localStorage");
+    return null;
+  }
+};
 
 const Dashboard: React.FC = () => {
+  const currentUser = getCurrentUser();
+  const userRole = currentUser?.role as UserRole;
+
+  console.log("CURRENT USER:", currentUser);
+  console.log("CURRENT USER ROLE:", userRole);
+
+  if (!currentUser) {
+    return (
+      <div className="w-full p-6 font-sans text-red-500 text-xl">
+        ❌ Error: User not logged in or invalid user data
+      </div>
+    );
+  }
+
+  /* SUPER ADMIN */
+  const renderSuperAdminDashboard = () => (
+    <>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
+        <h4 className="text-[18px] font-semibold text-[#495057] uppercase">Dashboard</h4>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+        <div className="lg:col-span-4 flex flex-col gap-6">
+          <ProfileCard />
+          <MonthlyEarningCard />
+        </div>
+
+        <div className="lg:col-span-8 flex flex-col gap-6">
+          <DashboardStats />
+          <Chats />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+        <SocialSourceCard />
+        <ActivityFeed />
+        <TopCitiesCard />
+      </div>
+
+      <TransactionTable />
+    </>
+  );
+
+  /* MANAGER */
+  const renderManagerDashboard = () => (
+    <>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
+        <h4 className="text-[18px] font-semibold text-[#495057] uppercase">Manager Dashboard</h4>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+        <div className="lg:col-span-4 flex flex-col gap-6">
+          <ProfileCard />
+          <MonthlyEarningCard />
+        </div>
+
+        <div className="lg:col-span-8 flex flex-col gap-6">
+          <DashboardStats />
+          <Chats />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+        <SocialSourceCard />
+        <ActivityFeed />
+        <TopCitiesCard />
+      </div>
+    </>
+  );
+
+  /* ACCOUNTANT */
+  const renderAccountantDashboard = () => (
+    <>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
+        <h4 className="text-[18px] font-semibold text-[#495057] uppercase">Accountant Dashboard</h4>
+      </div>
+
+      <TransactionTable />
+    </>
+  );
+
+  /* ROLE HANDLER */
+  const renderDashboardContent = () => {
+    if (!userRole) {
+      return (
+        <div className="text-red-500 text-lg">
+          ❌ Error: User role missing
+        </div>
+      );
+    }
+
+    switch (userRole) {
+      case UserRole.SUPER_ADMIN:
+        return renderSuperAdminDashboard();
+
+      case UserRole.MANAGER:
+        return renderManagerDashboard();
+
+      case UserRole.ACCOUNTANT:
+        return renderAccountantDashboard();
+
+      default:
+        return (
+          <div className="text-red-500 text-lg">
+            ❌ Unknown role: {userRole}
+          </div>
+        );
+    }
+  };
 
   return (
     <div className="w-full p-6 font-sans">
       <div className="container mx-auto max-w-[1440px]">
-        
-        {/* Breadcrumb / Title */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
-            <h4 className="text-[18px] font-semibold text-[#495057] uppercase">Dashboard</h4>
-            <div className="text-[13px] font-medium text-[#74788d]">
-                <span className="cursor-pointer hover:text-[#556ee6]">Skote</span> 
-                <span className="mx-2">/</span> 
-                <span className="text-[#556ee6]">Dashboard</span>
-            </div>
-        </div>
-
-        {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
-          
-          {/* Left Column (Profile & Monthly Earning) */}
-          <div className="lg:col-span-4 flex flex-col gap-6">
-            {/* Profile Card */}
-            <div className="w-full">
-              <ProfileCard />
-            </div>
-            {/* Monthly Earning Card */}
-            <div className="w-full flex-1">
-              <MonthlyEarningCard />
-            </div>
-          </div>
-
-          {/* Right Column (Stats & Chart) */}
-          <div className="lg:col-span-8 flex flex-col gap-6">
-            {/* Top Row: 3 Stats Cards */}
-            <div className="w-full">
-              <DashboardStats />
-            </div>
-            
-            {/* Bottom Row: Email Sent Chart */}
-            <div className="w-full flex-1">
-              <Chats />
-            </div>
-          </div>
-
-        </div>
-
-        {/* Second Row: 3 Column Widgets */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
-            <div className="w-full h-full">
-                <SocialSourceCard />
-            </div>
-            <div className="w-full h-full">
-                <ActivityFeed />
-            </div>
-            <div className="w-full h-full">
-                <TopCitiesCard />
-            </div>
-        </div>
-
-        {/* Third Row: Transaction Table */}
-        <div className="w-full">
-          <TransactionTable />
-        </div>
-
+        {renderDashboardContent()}
       </div>
     </div>
   );

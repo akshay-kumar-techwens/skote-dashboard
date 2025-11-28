@@ -1,25 +1,67 @@
 import React from 'react';
-import Dashboard from './Pages/Dashboard/Dashboard';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import Sidebar from './Components/Sidebar/Sidebar';
 import Header from './Components/Header/Header';
+import Dashboard from './Pages/Dashboard/Dashboard';
 
-const App: React.FC = () => {
+import SignupPage from './Pages/Auth/Signup/SignupPage';
+import LoginPage from './Pages/Auth/Login/LoginPage';
+
+// Layout for protected pages (Dashboard Layout)
+const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="flex h-screen bg-[#f8f8fb] overflow-hidden font-sans">
+      
       {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content Wrapper */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Navbar/Header */}
+
+        {/* Header */}
         <Header />
 
-        {/* Scrollable Dashboard Content */}
+        {/* Page Content */}
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <Dashboard />
+          {children}
         </div>
       </div>
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <Routes>
+
+        {/* Public Routes */}
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* Protected Dashboard Routes */}
+        <Route
+          path="/"
+          element={
+            <DashboardLayout>
+              <Dashboard />
+            </DashboardLayout>
+          }
+        />
+
+        {/* Example: Add more dashboard routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <DashboardLayout>
+              <Dashboard />
+            </DashboardLayout>
+          }
+        />
+
+      </Routes>
+    </Router>
   );
 };
 
