@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { findUserByEmail, createUser } = require("../models/userModel");
+const { findUserByEmail, createUser } = require("../services/userService");
 const ROLES = require("../utils/roles");
 
 exports.register = async (req, res) => {
@@ -54,7 +54,7 @@ exports.login = async (req, res) => {
   user: {
     id: user.id,
     name: user.name,
-    email: user.email,
+    // email: user.email,
     role: user.role
   }
 });
@@ -64,3 +64,13 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.logout=async(req,res)=>{
+  try {
+    res.clearCookie("token");
+    res.status(200).json({message:"Logout successfully"});
+    
+  } catch (error) {
+    res.status(500).json({error:error.message});
+  }
+}

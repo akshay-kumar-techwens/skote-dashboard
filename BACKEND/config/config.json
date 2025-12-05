@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "Admin@123",
+    "database": "skote",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "Admin@123",
+    "database": "skote",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "Admin@123",
+    "database": "skote",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  }
+}
