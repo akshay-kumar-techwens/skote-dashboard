@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { MENU_ITEMS } from '../constants';
 import MenuItemComponent from './MenuItem';
 import { Hexagon } from 'lucide-react';
+import axios from 'axios';
+const API_URL = "http://localhost:5000/api";
 
 const Sidebar = () => {
     // State to track which parent items are expanded
@@ -24,6 +26,21 @@ const Sidebar = () => {
     const handleItemClick = (id) => {
         setActiveItem(id);
     };
+    //logout function
+    const handlelogout=async()=>{
+        try {
+            await axios.post(`${API_URL}/auth/logout`,{},{withCredentials:true});
+            console.log("Logout clicked");
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          //redirect to login page
+            window.location.href = "/login";
+            
+        } catch (error) {
+            console.error("Logout error:", error);
+
+        }
+    }
 
     return (
         <div className="w-[250px] bg-[#2a3042] h-full flex flex-col shadow-[0_0.75rem_1.5rem_rgba(18,38,63,0.03)] z-40">
@@ -68,6 +85,28 @@ const Sidebar = () => {
                         );
                     })}
                 </ul>
+            </div>
+               <div className="h-[60px] flex items-center px-6 bg-[#2a3042] border-t border-[#32394e]">
+         <button
+    onClick={handlelogout}
+    className="w-full text-left text-white flex items-center gap-3 hover:text-[#ff0000] transition-all"
+>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1"
+        />
+    </svg>
+    Logout
+</button>
             </div>
         </div>
     );

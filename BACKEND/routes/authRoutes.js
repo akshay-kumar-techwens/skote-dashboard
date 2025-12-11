@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, login } = require("../controllers/authController");
+const { register, login ,logout } = require("../controllers/authController");
 const { protect } = require("../middlewares/authMiddleware");
 const { checkRole } = require("../middlewares/roleMiddleware");
 const ROLES = require("../utils/roles");
@@ -9,6 +9,7 @@ const router = express.Router();
 // Public Routes
 router.post("/register", register);
 router.post("/login", login);
+router.post("/logout", logout);
 
 // Protected Routes
 router.get("/admin",

@@ -65,12 +65,18 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.logout=async(req,res)=>{
+exports.logout = async (req, res) => {
   try {
-    res.clearCookie("token");
-    res.status(200).json({message:"Logout successfully"});
-    
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: false,   // Same as login
+      sameSite: "lax", // recommended for localhost
+      path: "/"        // Required for cookie removal
+    });
+
+    res.status(200).json({ message: "Logout successfully" });
+
   } catch (error) {
-    res.status(500).json({error:error.message});
+    res.status(500).json({ error: error.message });
   }
-}
+};
