@@ -75,7 +75,7 @@ const Dashboard = () => {
     const renderManagerDashboard = () => (
         <>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
-                <h4 className="text-[18px] font-semibold text-[#495057] uppercase">Manager Dashboard</h4>
+                <h4 className="text-[18px] font-semibold text-[#495057] uppercase">{userRole} Dashboard</h4>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
@@ -95,6 +95,8 @@ const Dashboard = () => {
                 <ActivityFeed />
                 <TopCitiesCard />
             </div>
+
+            <TransactionTable />
         </>
     );
 
@@ -130,11 +132,8 @@ const Dashboard = () => {
                 return renderAccountantDashboard();
 
             default:
-                return (
-                    <div className="text-red-500 text-lg">
-                        ❌ Unknown role: {userRole}
-                    </div>
-                );
+                // For any custom role, show the Manager/Default dashboard
+                return renderManagerDashboard();
         }
     };
 

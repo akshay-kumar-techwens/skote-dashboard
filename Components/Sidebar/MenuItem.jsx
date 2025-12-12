@@ -34,7 +34,7 @@ const MenuItemComponent = ({
                     if (hasChildren) {
                         onToggle();
                     } else {
-                        onClick(item.id);
+                        onClick(item);
                     }
                 }}
             >
@@ -65,7 +65,7 @@ const MenuItemComponent = ({
                             cursor-pointer block py-[0.4rem] pl-[3.2rem] pr-4 text-[13px] transition-colors duration-200 select-none
                             ${isSubActive ? 'text-[#fff]' : 'text-[#79829c] hover:text-[#fff]'}
                         `}
-                                        onClick={() => onClick(subItem.id)}
+                                        onClick={() => onClick(subItem)}
                                     >
                                         {subItem.label}
                                     </div>

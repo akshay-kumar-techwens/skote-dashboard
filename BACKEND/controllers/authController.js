@@ -1,7 +1,10 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { findUserByEmail, createUser } = require("../services/userService");
+const { findUserByEmail, createUser, findAllUsers, deleteUser } = require("../services/userService");
 const ROLES = require("../utils/roles");
+const { Role } = require("../models");
+
+const { where } = require("sequelize");
 
 exports.register = async (req, res) => {
   try {
@@ -24,7 +27,7 @@ exports.register = async (req, res) => {
 };
 
 
-
+// ─────────────────────────────────────────────────────────
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -48,17 +51,26 @@ exports.login = async (req, res) => {
       secure: false
     });
 
-   res.json({
-  message: "Login success",
-  token,
-  user: {
-    id: user.id,
-    name: user.name,
-    // email: user.email,
-    role: user.role
-  }
-});
+    // 1️⃣ Find Role by roleName string
+    const userRole = await Role.findOne({
+      where: { roleName: user.role }
+    });
 
+    // If no role found, return empty perms
+    const permissions = userRole ? userRole.rolePermissions : [];
+
+    // 2️⃣ Response
+    res.json({
+      message: "Login success",
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      },
+      permissions
+    });
 
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -78,5 +90,27 @@ exports.logout = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    console.log("GET /users called");
+    const users = await findAllUsers();
+    console.log("Sending users:", users.length);
+    res.json(users);
+  } catch (err) {
+    console.error("Error in getAllUsers:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await deleteUser(id);
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };

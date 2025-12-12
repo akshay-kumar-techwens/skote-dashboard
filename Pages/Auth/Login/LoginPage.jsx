@@ -69,12 +69,17 @@ const LoginPage = () => {
             const response = await axios.post(`${API_URL}/auth/login`, {
                 email: formData.email.toLowerCase().trim(),
                 password: formData.password
-            });
+            }, { withCredentials: true }); // <--- CRITICAL FIX
 
             // Store token and user data
-            const { token, user } = response.data;
+            const { token, user, permissions } = response.data;
+
+            // Merge permissions into user object for easier access
+            const userWithPermissions = { ...user, permissions: permissions || [] };
+
             localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('user', JSON.stringify(userWithPermissions));
+            console.log("Login success. Permissions saved:", permissions);
 
             // Redirect to dashboard
             window.location.href = '/dashboard';
@@ -141,8 +146,8 @@ const LoginPage = () => {
                                 onChange={handleChange}
                                 disabled={isLoading}
                                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 ${errors.email
-                                        ? 'border-red-500 bg-red-50'
-                                        : 'border-gray-300'
+                                    ? 'border-red-500 bg-red-50'
+                                    : 'border-gray-300'
                                     } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 placeholder="Enter your email address"
                             />
@@ -167,8 +172,8 @@ const LoginPage = () => {
                                 onChange={handleChange}
                                 disabled={isLoading}
                                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 ${errors.password
-                                        ? 'border-red-500 bg-red-50'
-                                        : 'border-gray-300'
+                                    ? 'border-red-500 bg-red-50'
+                                    : 'border-gray-300'
                                     } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 placeholder="Enter your password"
                             />

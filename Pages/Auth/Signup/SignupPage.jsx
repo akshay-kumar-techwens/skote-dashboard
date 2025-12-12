@@ -19,6 +19,37 @@ const SignupPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
 
+    const [availableRoles, setAvailableRoles] = useState([
+        { value: UserRole.MANAGER, label: 'Manager' },
+        { value: UserRole.ACCOUNTANT, label: 'Accountant' },
+        { value: UserRole.SUPER_ADMIN, label: 'Super Admin' }
+    ]);
+
+    // Fetch dynamic roles
+    React.useEffect(() => {
+        const fetchRoles = async () => {
+            try {
+                const response = await axios.get(`${API_URL}/roles/all`);
+                // Backend returns { roles: [...] }
+                const rolesData = response.data.roles || [];
+                const dynamicRoles = rolesData.map(r => ({
+                    value: r.roleName,
+                    label: r.roleName.charAt(0).toUpperCase() + r.roleName.slice(1) // Capitalize
+                }));
+
+                setAvailableRoles(prev => {
+                    // Avoid duplicates
+                    const existingValues = new Set(prev.map(p => p.value));
+                    const newRoles = dynamicRoles.filter(d => !existingValues.has(d.value));
+                    return [...prev, ...newRoles];
+                });
+            } catch (error) {
+                console.error("Failed to fetch roles", error);
+            }
+        };
+        fetchRoles();
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -144,31 +175,10 @@ const SignupPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
             <div className="max-w-md w-full">
-                {/* Header */}
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                        Create Your Account
-                    </h1>
-                    <p className="text-gray-600">
-                        Join us and get started with your new account
-                    </p>
-                </div>
+                {/* ... Header ... */}
 
-                {/* Signup Form */}
                 <div className="bg-white rounded-2xl shadow-xl p-8">
-                    {/* Success Message */}
-                    {successMessage && (
-                        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                            <p className="text-green-800 text-sm font-medium">{successMessage}</p>
-                        </div>
-                    )}
-
-                    {/* Submit Error Message */}
-                    {errors.submit && (
-                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                            <p className="text-red-800 text-sm font-medium">{errors.submit}</p>
-                        </div>
-                    )}
+                    {/* ... Messages ... */}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Name Field */}
@@ -184,8 +194,8 @@ const SignupPage = () => {
                                 onChange={handleChange}
                                 disabled={isLoading}
                                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${errors.name
-                                        ? 'border-red-500 bg-red-50'
-                                        : 'border-gray-300'
+                                    ? 'border-red-500 bg-red-50'
+                                    : 'border-gray-300'
                                     } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 placeholder="Enter your full name"
                             />
@@ -210,8 +220,8 @@ const SignupPage = () => {
                                 onChange={handleChange}
                                 disabled={isLoading}
                                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${errors.email
-                                        ? 'border-red-500 bg-red-50'
-                                        : 'border-gray-300'
+                                    ? 'border-red-500 bg-red-50'
+                                    : 'border-gray-300'
                                     } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 placeholder="Enter your email address"
                             />
@@ -237,12 +247,14 @@ const SignupPage = () => {
                                 className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''
                                     }`}
                             >
-                                <option value={UserRole.MANAGER}>Manager</option>
-                                <option value={UserRole.ACCOUNTANT}>Accountant</option>
-                                <option value={UserRole.SUPER_ADMIN}>Super Admin</option>
+                                {availableRoles.map(role => (
+                                    <option key={role.value} value={role.value}>
+                                        {role.label}
+                                    </option>
+                                ))}
                             </select>
                             <p className="mt-2 text-sm text-gray-500 bg-blue-50 p-2 rounded">
-                                💼 {roleDescriptions[formData.role]}
+                                💼 {roleDescriptions[formData.role] || ('Custom Role: ' + formData.role)}
                             </p>
                         </div>
 
@@ -259,8 +271,8 @@ const SignupPage = () => {
                                 onChange={handleChange}
                                 disabled={isLoading}
                                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${errors.password
-                                        ? 'border-red-500 bg-red-50'
-                                        : 'border-gray-300'
+                                    ? 'border-red-500 bg-red-50'
+                                    : 'border-gray-300'
                                     } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 placeholder="Create a strong password"
                             />
@@ -290,8 +302,8 @@ const SignupPage = () => {
                                 onChange={handleChange}
                                 disabled={isLoading}
                                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${errors.confirmPassword
-                                        ? 'border-red-500 bg-red-50'
-                                        : 'border-gray-300'
+                                    ? 'border-red-500 bg-red-50'
+                                    : 'border-gray-300'
                                     } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 placeholder="Confirm your password"
                             />

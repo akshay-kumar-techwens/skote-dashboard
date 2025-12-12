@@ -4,6 +4,8 @@ const { findUserById } = require("../services/userService");
 exports.protect = async (req, res, next) => {
   try {
     const token = req.cookies.token;
+    console.log("Cookies received:", req.cookies); // DEBUG LOG
+    console.log("Token:", token);
 
     if (!token)
       return res.status(401).json({ message: "Not authorized" });

@@ -2,6 +2,7 @@ import {
     Home, Calendar, MessageSquare, FileText, ShoppingCart,
     CircleDollarSign, Mail, Briefcase, ListChecks, Users, Newspaper, LayoutGrid
 } from 'lucide-react';
+import { UserRole } from '../Pages/Auth/Signup/types'
 
 export const MENU_ITEMS = [
     {
@@ -14,10 +15,12 @@ export const MENU_ITEMS = [
         label: 'Dashboards',
         icon: Home,
         link: '/dashboard',
+        
+        allowedRoles: [UserRole.SUPER_ADMIN, UserRole.MANAGER ,UserRole.ACCOUNTANT],
         subItems: [
-            { id: 'dash-default', label: 'Default', link: '/dashboard/default' },
-            { id: 'dash-saas', label: 'Saas', link: '/dashboard/saas' },
-            { id: 'dash-crypto', label: 'Crypto', link: '/dashboard/crypto' },
+            { id: 'dash-default', label: 'Default', link: '/dashboard/default'},
+            { id: 'dash-create-Role', label: 'Create Roles', link: '/dashboard/createroles' ,allowedRoles:[UserRole.SUPER_ADMIN] },
+            { id: 'dash-existing-users', label: 'Existing Users', link: '/dashboard/existingusers' ,allowedRoles:[UserRole.SUPER_ADMIN] },
             { id: 'dash-blog', label: 'Blog', link: '/dashboard/blog' },
             { id: 'dash-job', label: 'Job', link: '/dashboard/job' },
         ]
