@@ -13,6 +13,9 @@ import Dashboard from './Pages/Dashboard/Dashboard';
 import EmployeeList from './Pages/Dashboard/Subpages/EmployeeList';
 
 import CreateRole from './Pages/Dashboard/Subpages/CreateRole';
+import EditUser from './Pages/Dashboard/Subpages/EditUser';
+import RoleList from './Pages/Dashboard/Subpages/RoleList';
+import EditRole from './Pages/Dashboard/Subpages/EditRole';
 
 const AppRoutes = () => {
     return (
@@ -32,6 +35,9 @@ const AppRoutes = () => {
 
                 {/* Add more dashboard routes here as needed */}
                 <Route path="createroles" element={<CreateRole />} />
+                <Route path="edit-user/:id" element={<EditUser />} />
+                <Route path="role" element={<RoleList />} />
+                <Route path="edit-role/:id" element={<EditRole />} />
                 <Route path="blog" element={<div>Blog Dashboard (Placeholder)</div>} />
                 <Route path="job" element={<div>Job Dashboard (Placeholder)</div>} />
             </Route>

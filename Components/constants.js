@@ -15,13 +15,13 @@ export const MENU_ITEMS = [
         label: 'Dashboards',
         icon: Home,
         link: '/dashboard',
-        
-        allowedRoles: [UserRole.SUPER_ADMIN, UserRole.MANAGER ,UserRole.ACCOUNTANT],
+
+        allowedRoles: [UserRole.SUPER_ADMIN, UserRole.MANAGER, UserRole.ACCOUNTANT],
         subItems: [
-            { id: 'dash-default', label: 'Default', link: '/dashboard/default'},
-            { id: 'dash-create-Role', label: 'Create Roles', link: '/dashboard/createroles' ,allowedRoles:[UserRole.SUPER_ADMIN] },
-            { id: 'dash-existing-users', label: 'Existing Users', link: '/dashboard/existingusers' ,allowedRoles:[UserRole.SUPER_ADMIN] },
-            { id: 'dash-blog', label: 'Blog', link: '/dashboard/blog' },
+            { id: 'dash-default', label: 'Default', link: '/dashboard/default' },
+            { id: 'dash-create-Role', label: 'Create Roles', link: '/dashboard/createroles', allowedRoles: [UserRole.SUPER_ADMIN] },
+            { id: 'dash-existing-users', label: 'Existing Users', link: '/dashboard/existingusers', allowedRoles: [UserRole.SUPER_ADMIN] },
+            { id: 'dash-role', label: 'Roles', link: '/dashboard/role' },
             { id: 'dash-job', label: 'Job', link: '/dashboard/job' },
         ]
     },

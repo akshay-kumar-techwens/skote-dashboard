@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Edit, Trash2, Search, Filter } from 'lucide-react';
 
 import axios from 'axios';
@@ -15,6 +16,7 @@ const fetchEmployees = async () => {
 };
 
 const EmployeeList = () => {
+    const navigate = useNavigate();
     const [employees, setEmployees] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
@@ -160,7 +162,10 @@ const EmployeeList = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-center">
-                                                <button className="text-skote-primary hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded-md transition-colors">
+                                                <button
+                                                    onClick={() => navigate(`/dashboard/edit-user/${employee.id}`)}
+                                                    className="text-skote-primary hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded-md transition-colors"
+                                                >
                                                     <Edit size={18} />
                                                 </button>
                                             </td>

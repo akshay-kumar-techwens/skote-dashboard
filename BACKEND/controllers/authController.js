@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { findUserByEmail, createUser, findAllUsers, deleteUser } = require("../services/userService");
+const { findUserByEmail, createUser, findAllUsers, deleteUser, findUserById, updateUser } = require("../services/userService");
 const ROLES = require("../utils/roles");
 const { Role } = require("../models");
 
@@ -110,6 +110,42 @@ exports.deleteUser = async (req, res) => {
     const { id } = req.params;
     await deleteUser(id);
     res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getUserById = async (req, res) => {
+  try {
+    console.log(`[DEBUG] getUserById called for ID: ${req.params.id}`);
+    const user = await findUserById(req.params.id);
+    if (!user) {
+      console.log(`[DEBUG] User ${req.params.id} NOT FOUND in DB`);
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Return without password
+    const { password, ...userData } = user.toJSON();
+    res.json(userData);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.updateUserDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, password, role } = req.body;
+
+    const updates = {};
+    if (name) updates.name = name;
+    if (email) updates.email = email;
+    if (role) updates.role = role;
+    if (password && password.trim() !== "") {
+      updates.password = await bcrypt.hash(password, 10);
+    }
+
+    const updatedUser = await updateUser(id, updates);
+    res.json({ message: "User updated successfully", user: updatedUser });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

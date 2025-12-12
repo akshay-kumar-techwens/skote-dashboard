@@ -22,11 +22,25 @@ const deleteUser = async (id) => {
     return await user.destroy();
 }
 
+const updateUser = async (id, data) => {
+    const user = await User.findByPk(id);
+    if (!user) throw new Error("User not found");
+
+    // If password is being updated, you might need to hash it here or in controller. 
+    // Assuming controller handles hashing or service handles it. 
+    // Let's safe-guard: if data.password exists, user.password = data.password.
+    // Note: ensure calling function hashes it if raw.
+
+    await user.update(data);
+    return user;
+}
+
 module.exports = {
     findUserByEmail,
     createUser,
     findUserById,
     findAllUsers,
-    deleteUser
+    deleteUser,
+    updateUser
 }
 // Tumhara raw SQL service Sequelize me convert

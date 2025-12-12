@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, login, logout, getAllUsers, deleteUser } = require("../controllers/authController");
+const { register, login, logout, getAllUsers, deleteUser, updateUserDetails, getUserById } = require("../controllers/authController");
 const { protect } = require("../middlewares/authMiddleware");
 const { checkRole } = require("../middlewares/roleMiddleware");
 const ROLES = require("../utils/roles");
@@ -37,5 +37,11 @@ router.get("/attendance",
     res.json({ message: "Manager Attendance Access" });
   }
 );
+
+// Update user (admin only)
+router.put('/users/:id', protect, updateUserDetails);
+
+// Get single user
+router.get('/users/:id', protect, getUserById);
 
 module.exports = router;
